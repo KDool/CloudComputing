@@ -5,9 +5,9 @@ from typing import List, Optional
 class SparkJobRequest(BaseModel):
     script: str
     args: Optional[List[str]] = []
-    executor_memory: str = "2G"
+    executor_memory: str = "512m"
+    driver_memory: str = "512m"
     num_executors: int = 2
-    deploy_mode: str = "cluster"
 
 
 class HadoopJobRequest(BaseModel):

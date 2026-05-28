@@ -10,8 +10,7 @@ def submit_spark_job(request):
 
     cmd = [
         "spark-submit",
-        "--master", "yarn",
-        "--deploy-mode", request.deploy_mode,
+        "--driver-memory", request.driver_memory,
         "--executor-memory", request.executor_memory,
         "--num-executors", str(request.num_executors),
         script_path

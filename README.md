@@ -32,3 +32,51 @@ This endpoint is provided by FastAPI and exposes the API documentation for:
 - `GET /jobs/{application_id}`
 
 If you are not using host networking, replace `localhost` with the container host IP or hostname and ensure port `8080` is accessible.
+
+# Example job submission
+
+## Submit the Spark RDD example
+
+From the project root, use Spark's `spark-submit` with the example script:
+
+```bash
+spark-submit spark/chicago_crimes_spark_rdd.py <input_csv_or_dir> <output_dir>
+```
+
+Example:
+
+```bash
+spark-submit spark/chicago_crimes_spark_rdd.py archive/Chicago_Crimes_2001_to_2004.csv spark-output
+```
+
+The job will write output files under `spark-output` (one part file if the script uses `coalesce(1)`).
+
+## Build and submit the Hadoop MapReduce example
+
+First build the JAR from the `map-reduce` module:
+
+```bash
+cd map-reduce
+mvn package
+```
+
+Then submit it with Hadoop:
+
+```bash
+hadoop jar target/map-reduce-1.0-SNAPSHOT.jar it.unipi.cloud.ChicagoCrimesApp <input_csv> <intermediate_output_dir> <final_output_dir>
+```
+
+Example:
+
+```bash
+cd map-reduce
+hadoop jar target/map-reduce-1.0-SNAPSHOT.jar it.unipi.cloud.ChicagoCrimesApp /data/jobs/chicago_crimes.csv /data/jobs/mr-intermediate /data/jobs/mr-final
+```
+
+If the output directories already exist, remove them before running the job:
+
+```bash
+hdfs dfs -rm -r /data/jobs/mr-intermediate /data/jobs/mr-final
+```
+
+> Replace paths with your actual input/output locations. If you are running inside a Docker container, use the mounted host paths visible to the container (for example `/workspace`).
